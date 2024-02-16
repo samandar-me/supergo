@@ -7,18 +7,18 @@ import kotlinx.coroutines.flow.StateFlow
 
 class IntroComponent(
     componentContext: ComponentContext,
-    storeFactory: StoreFactory,
+   // storeFactory: StoreFactory,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
-    private val mainStore = instanceKeeper.getStore {
-        IntroStoreFactory(
-            storeFactory = storeFactory
-        ).create()
-    }
+//    private val mainStore = instanceKeeper.getStore {
+//        IntroStoreFactory(
+//            storeFactory = storeFactory
+//        ).create()
+//    }
 //    val state: StateFlow<IntroStore.S>
-    fun onEvent(event: IntroStore.Intent) {
-        mainStore.accept(event)
-    }
+//    fun onEvent(event: IntroStore.Intent) {
+//        mainStore.accept(event)
+//    }
     fun onOutput(output: Output) {
         output(output)
     }

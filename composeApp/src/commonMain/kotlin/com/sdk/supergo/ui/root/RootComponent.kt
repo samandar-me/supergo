@@ -26,7 +26,7 @@ class RootComponent internal constructor(
         intro = { childContext, output ->
             IntroComponent(
                 componentContext = childContext,
-                storeFactory = storeFactory,
+           //     storeFactory = storeFactory,
                 output = output
             )
         },
