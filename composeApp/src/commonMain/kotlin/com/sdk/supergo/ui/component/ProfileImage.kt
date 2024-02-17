@@ -30,7 +30,7 @@ fun ProfileImage(
             }
     ) {
         Image(
-            painter = painterResource("img.png"),
+            painter = painterResource("img/img.png"),
             contentDescription = "profile_image",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

@@ -29,7 +29,7 @@ internal class HumanStoreFactory(
         }
 
         override fun executeIntent(intent: HumanStore.Intent, getState: () -> HumanStore.State) {
-            super.executeIntent(intent, getState)
+            
         }
     }
     private object ReducerImpl: Reducer<HumanStore.State, Message> {

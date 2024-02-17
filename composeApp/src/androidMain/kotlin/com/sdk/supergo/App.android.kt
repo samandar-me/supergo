@@ -6,6 +6,10 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.sdk.supergo.ui.root.RootComponent
+import com.sdk.supergo.ui.root.RootContent
 
 class AndroidApp : Application() {
     companion object {
@@ -21,8 +25,12 @@ class AndroidApp : Application() {
 class AppActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val rootComponent = RootComponent(
+            componentContext = defaultComponentContext(),
+            storeFactory = DefaultStoreFactory()
+        )
         setContent {
-
+            RootContent(component = rootComponent)
         }
     }
 }

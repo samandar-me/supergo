@@ -2,8 +2,10 @@ plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.compose)
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlinx.serialization)
+   // alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.sqlDelight)
+    id("kotlin-parcelize")
+    kotlin("plugin.serialization") version "1.6.21"
 }
 
 kotlin {
