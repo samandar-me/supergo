@@ -2,9 +2,9 @@ package com.sdk.supergo.util
 
 import io.github.aakira.napier.Napier
 
-fun logE(msg: String) {
-    Napier.e(msg)
+fun logEe(msg: String) {
+    Napier.e(msg, tag = "@@@Go")
 }
-fun logI(msg: String) {
-    Napier.i(msg)
+fun logDe(msg: String) {
+    Napier.d(msg, tag = "@@@Go")
 }

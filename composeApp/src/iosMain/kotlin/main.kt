@@ -4,6 +4,8 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.sdk.supergo.ui.root.RootComponent
 import com.sdk.supergo.ui.root.RootContent
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
 import platform.UIKit.UIViewController
 
 fun MainViewController(): UIViewController {
@@ -17,3 +19,7 @@ fun MainViewController(): UIViewController {
         RootContent(rootComponent)
     }
 }
+fun debugBuild() {
+    Napier.base(DebugAntilog())
+}
+

@@ -82,7 +82,6 @@ fun CityDropDown(
                         },
                         onClick = {
                             onSelected(item)
-                            onChanged()
                         }
                     )
                 }

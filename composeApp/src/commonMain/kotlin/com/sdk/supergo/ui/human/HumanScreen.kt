@@ -38,6 +38,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,15 +53,16 @@ import androidx.compose.ui.unit.sp
 import com.sdk.supergo.ui.component.CityDropDown
 import com.sdk.supergo.ui.component.Dot
 import com.sdk.supergo.ui.component.ProfileImage
+import com.sdk.supergo.util.logDe
 import compose.icons.AllIcons
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ArrowLeft
+import io.github.aakira.napier.Napier
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HumanScreen(component: HumanComponent) {
-    val state by component.state.collectAsState()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -87,89 +89,6 @@ fun HumanScreen(component: HumanComponent) {
             )
         }
     ) {
-        LazyColumn(
-            modifier = Modifier.padding(it),
-            contentPadding = PaddingValues(18.dp)
-        ) {
-            item {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(.8f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        Text("\uD83D\uDCCD", fontSize = 22.sp)
-                        Column {
-                            for (i in 0 until 16) {
-                                Spacer(Modifier.padding(1.dp))
-                                Dot()
-                                Spacer(Modifier.padding(1.dp))
-                            }
-                        }
-                        Text(text = "➤", fontSize = 22.sp)
-                        Spacer(Modifier.height(7.dp))
-                    }
-                    Spacer(Modifier.width(16.dp))
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(4f),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        CityDropDown(
-                            title = "Andijan",
-                            expanded = state.fromExpanded,
-                            selectedCity = state.selectedCity1,
-                            onChanged = {
-                                component.onEvent(HumanStore.Intent.OnFromChanged)
-                            },
-                            onSelected = { s ->
-                                component.onEvent(HumanStore.Intent.OnFromSelected(s))
-                            },
-                            cityList = state.cityList1
-                        )
-                        Divider(modifier = Modifier.padding(vertical = 8.dp))
-                        CityDropDown(
-                            title = "Tashkent",
-                            expanded = state.toExpanded,
-                            selectedCity = state.selectedCity2,
-                            onChanged = {
-                                component.onEvent(HumanStore.Intent.OnToChanged)
-                            },
-                            onSelected = { s ->
-                                component.onEvent(HumanStore.Intent.OnToSelected(s))
-                            },
-                            cityList = state.cityList2
-                        )
-                    }
-                    Spacer(Modifier.width(16.dp))
-                    Box(
-                        modifier = Modifier.fillMaxHeight().weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Box(
-                            modifier = Modifier.size(45.dp).clip(CircleShape)
-                                .background(Color(0xFFEDEDED)).clickable {
-                                    component.onEvent(HumanStore.Intent.OnReplaced)
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                painter = painterResource("img/replace.png"),
-                                contentDescription = "replace",
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }
+        HumanContent(component, it)
     }
 }

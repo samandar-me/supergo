@@ -25,6 +25,8 @@ internal class HumanStoreFactory(
         data class OnFromSelected(val city: String): Message
         data class OnToSelected(val city: String): Message
         data object OnReplaced:  Message
+        data class OnPeopleCountChanged(val count: String): Message
+        data class OnCarSelected(val index: Int): Message
     }
     private inner class ExecutorImpl: CoroutineExecutor<HumanStore.Intent, Unit, HumanStore.State, Message, Nothing>(
         appDispatchers.main
@@ -40,6 +42,8 @@ internal class HumanStoreFactory(
                 is HumanStore.Intent.OnFromSelected -> dispatch(Message.OnFromSelected(intent.city))
                 is HumanStore.Intent.OnToSelected -> dispatch(Message.OnToSelected(intent.city))
                 is HumanStore.Intent.OnReplaced -> dispatch(Message.OnReplaced)
+                is HumanStore.Intent.OnPeopleCountChanged -> dispatch(Message.OnPeopleCountChanged(intent.count))
+                is HumanStore.Intent.OnCarSelected -> dispatch(Message.OnCarSelected(intent.index))
             }
         }
     }
@@ -50,10 +54,22 @@ internal class HumanStoreFactory(
                 is Message.OnFromChanged -> copy(fromExpanded = !fromExpanded)
                 is Message.OnToChanged -> copy(toExpanded = !toExpanded)
                 is Message.OnReplaced -> {
-                    copy()
+                    val temp = copy()
+                    copy(
+                        title1 = title2,
+                        title2 = temp.title1,
+                        fromExpanded = false,
+                        toExpanded = false,
+                        cityList1 = cityList2,
+                        cityList2 = temp.cityList1,
+                        selectedCity1 = selectedCity2,
+                        selectedCity2 = temp.selectedCity1
+                    )
                 }
-                is Message.OnFromSelected-> copy(selectedCity1 = msg.city, fromExpanded = false)
-                is Message.OnToSelected-> copy(selectedCity2 = msg.city, toExpanded = false)
+                is Message.OnFromSelected -> copy(fromExpanded = !fromExpanded, selectedCity1 = msg.city)
+                is Message.OnToSelected-> copy(toExpanded = !toExpanded, selectedCity2 = msg.city)
+                is Message.OnPeopleCountChanged-> copy(peopleCount = msg.count)
+                is Message.OnCarSelected-> copy(selectedCarIndex = msg.index)
             }
         }
     }
