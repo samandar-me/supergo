@@ -25,8 +25,13 @@ internal class HumanStoreFactory(
         data class OnFromSelected(val city: String): Message
         data class OnToSelected(val city: String): Message
         data object OnReplaced:  Message
+        data object OnLuggage:  Message
+        data object OnLargeL:  Message
+        data object OnCon:  Message
+        data object OnOrderClicked:  Message
         data class OnPeopleCountChanged(val count: String): Message
         data class OnCarSelected(val index: Int): Message
+        data class OnNoteChanged(val note: String): Message
     }
     private inner class ExecutorImpl: CoroutineExecutor<HumanStore.Intent, Unit, HumanStore.State, Message, Nothing>(
         appDispatchers.main
@@ -44,6 +49,11 @@ internal class HumanStoreFactory(
                 is HumanStore.Intent.OnReplaced -> dispatch(Message.OnReplaced)
                 is HumanStore.Intent.OnPeopleCountChanged -> dispatch(Message.OnPeopleCountChanged(intent.count))
                 is HumanStore.Intent.OnCarSelected -> dispatch(Message.OnCarSelected(intent.index))
+                is HumanStore.Intent.OnLuggage -> dispatch(Message.OnLuggage)
+                is HumanStore.Intent.OnLarge -> dispatch(Message.OnLargeL)
+                is HumanStore.Intent.OnCon -> dispatch(Message.OnCon)
+                is HumanStore.Intent.OnOrderClicked -> dispatch(Message.OnOrderClicked)
+                is HumanStore.Intent.OnNoteChanged -> dispatch(Message.OnNoteChanged(intent.note))
             }
         }
     }
@@ -68,8 +78,13 @@ internal class HumanStoreFactory(
                 }
                 is Message.OnFromSelected -> copy(fromExpanded = !fromExpanded, selectedCity1 = msg.city)
                 is Message.OnToSelected-> copy(toExpanded = !toExpanded, selectedCity2 = msg.city)
-                is Message.OnPeopleCountChanged-> copy(peopleCount = msg.count)
+                is Message.OnPeopleCountChanged -> copy(peopleCount = msg.count)
                 is Message.OnCarSelected-> copy(selectedCarIndex = msg.index)
+                is Message.OnLargeL-> copy(largeL = !largeL)
+                is Message.OnLuggage-> copy(luggage = !luggage)
+                is Message.OnCon-> copy(con = !con)
+                is Message.OnOrderClicked-> copy()
+                is Message.OnNoteChanged-> copy(noteToDriver = msg.note)
             }
         }
     }

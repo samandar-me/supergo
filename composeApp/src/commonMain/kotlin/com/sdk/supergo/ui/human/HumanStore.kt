@@ -9,9 +9,14 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         data class OnFromSelected(val city: String): Intent
         data class OnToSelected(val city: String): Intent
         data object OnReplaced: Intent
+        data object OnLuggage: Intent
+        data object OnLarge: Intent
+        data object OnCon: Intent
+        data object OnOrderClicked: Intent
 
         data class OnPeopleCountChanged(val count: String): Intent
         data class OnCarSelected(val index: Int): Intent
+        data class OnNoteChanged(val note: String): Intent
     }
     data class State(
         val title1: String = "Andijan",
@@ -23,6 +28,10 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         val selectedCity1: String = cityList1[0],
         val selectedCity2: String = cityList2[0],
         val peopleCount: String = "",
-        val selectedCarIndex: Int = -1
+        val selectedCarIndex: Int = -1,
+        val con: Boolean = false,
+        val luggage: Boolean = false,
+        val largeL: Boolean = false,
+        val noteToDriver: String = ""
     )
 }
