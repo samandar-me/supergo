@@ -98,11 +98,12 @@ fun HumanScreen(component: HumanComponent) {
                 modifier = Modifier.padding(16.dp),
                 text = "Buyurtma berish",
                 onClick = {
-
+                    component.onEvent(HumanStore.Intent.OnShowOrder)
                 }
             )
         }
     ) {
         HumanContent(component, it)
+        OrderDialog(component = component)
     }
 }

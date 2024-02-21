@@ -32,6 +32,10 @@ internal class HumanStoreFactory(
         data class OnPeopleCountChanged(val count: String): Message
         data class OnCarSelected(val index: Int): Message
         data class OnNoteChanged(val note: String): Message
+        data object OnCloseOrder: Message
+        data object OnShowOrder: Message
+        data class OnNumberChanged(val value: String): Message
+        data object OnSendCode: Message
     }
     private inner class ExecutorImpl: CoroutineExecutor<HumanStore.Intent, Unit, HumanStore.State, Message, Nothing>(
         appDispatchers.main
@@ -54,6 +58,10 @@ internal class HumanStoreFactory(
                 is HumanStore.Intent.OnCon -> dispatch(Message.OnCon)
                 is HumanStore.Intent.OnOrderClicked -> dispatch(Message.OnOrderClicked)
                 is HumanStore.Intent.OnNoteChanged -> dispatch(Message.OnNoteChanged(intent.note))
+                is HumanStore.Intent.OnNumberChanged -> dispatch(Message.OnNumberChanged(intent.value))
+                is HumanStore.Intent.OnSendCode -> dispatch(Message.OnSendCode)
+                is HumanStore.Intent.OnCloseOrder -> dispatch(Message.OnCloseOrder)
+                is HumanStore.Intent.OnShowOrder -> dispatch(Message.OnShowOrder)
             }
         }
     }
@@ -85,6 +93,10 @@ internal class HumanStoreFactory(
                 is Message.OnCon-> copy(con = !con)
                 is Message.OnOrderClicked-> copy()
                 is Message.OnNoteChanged-> copy(noteToDriver = msg.note)
+                is Message.OnNumberChanged-> copy(number = msg.value)
+                is Message.OnCloseOrder-> copy(isOrderVisible = false)
+                is Message.OnShowOrder-> copy(isOrderVisible = true)
+                is Message.OnSendCode-> copy()
             }
         }
     }

@@ -17,6 +17,10 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         data class OnPeopleCountChanged(val count: String): Intent
         data class OnCarSelected(val index: Int): Intent
         data class OnNoteChanged(val note: String): Intent
+        data object OnCloseOrder: Intent
+        data class OnNumberChanged(val value: String): Intent
+        data object OnSendCode: Intent
+        data object OnShowOrder: Intent
     }
     data class State(
         val title1: String = "Andijan",
@@ -32,6 +36,8 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         val con: Boolean = false,
         val luggage: Boolean = false,
         val largeL: Boolean = false,
-        val noteToDriver: String = ""
+        val noteToDriver: String = "",
+        val number: String = "",
+        val isOrderVisible: Boolean = false
     )
 }

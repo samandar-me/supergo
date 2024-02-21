@@ -65,7 +65,7 @@ import org.jetbrains.compose.resources.painterResource
 fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
     val state by component.state.collectAsState()
     LazyColumn(
-        modifier = Modifier.padding(paddingValues), //.windowInsetsPadding(WindowInsets.safeDrawing)
+        modifier = Modifier.padding(paddingValues),
         contentPadding = PaddingValues(18.dp)
     ) {
         item {
