@@ -105,5 +105,6 @@ fun HumanScreen(component: HumanComponent) {
     ) {
         HumanContent(component, it)
         OrderDialog(component = component)
+        ConfirmDialog(component = component)
     }
 }

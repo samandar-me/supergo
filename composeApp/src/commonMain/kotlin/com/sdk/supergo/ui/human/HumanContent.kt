@@ -1,6 +1,7 @@
 package com.sdk.supergo.ui.human
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -81,7 +82,11 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text("\uD83D\uDCCD", fontSize = 22.sp)
+                    Image(
+                        painter = painterResource("img/pushpin.png"),
+                        contentDescription = "push",
+                        modifier = Modifier.size(22.dp)
+                    )
                     Column {
                         for (i in 0 until 16) {
                             Spacer(Modifier.padding(1.dp))
@@ -89,7 +94,11 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                             Spacer(Modifier.padding(1.dp))
                         }
                     }
-                    Text(text = "➤", fontSize = 22.sp)
+                    Image(
+                        painter = painterResource("img/location.png"),
+                        contentDescription = "pin",
+                        modifier = Modifier.size(22.dp)
+                    )
                     Spacer(Modifier.height(7.dp))
                 }
                 Spacer(Modifier.width(16.dp))
@@ -168,7 +177,7 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 itemsIndexed(
-                    items = listOf(0, 1, 2),
+                    items = state.carList,
                     itemContent = { index, _ ->
                         CarItem(
                             selected = state.selectedCarIndex == index,
