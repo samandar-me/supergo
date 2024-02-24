@@ -1,13 +1,15 @@
 package com.sdk.supergo.ui.human
 
 import com.arkivanov.mvikotlin.core.store.Store
+import com.sdk.supergo.data.model.CityItem
+import com.sdk.supergo.data.model.FakeCityItem
 
 interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
     sealed interface Intent {
         data object OnFromChanged: Intent
         data object OnToChanged: Intent
-        data class OnFromSelected(val city: String): Intent
-        data class OnToSelected(val city: String): Intent
+        data class OnFromSelected(val city: CityItem): Intent
+        data class OnToSelected(val city: CityItem): Intent
         data object OnReplaced: Intent
         data object OnLuggage: Intent
         data object OnLarge: Intent
@@ -26,14 +28,15 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         data object OnConfirmClicked: Intent
     }
     data class State(
+        val isLoading: Boolean = true,
         val title1: String = "Andijan",
         val title2: String = "Tashkent",
         val fromExpanded: Boolean = false,
         val toExpanded: Boolean = false,
-        val cityList1: List<String> = listOf("Asaka", "Xo'jabod", "Qo'rg'ontepa"),
-        val cityList2: List<String> = listOf("Chorsu", "Qo'yliq", "Shayxontoxur"),
-        val selectedCity1: String = cityList1[0],
-        val selectedCity2: String = cityList2[0],
+        val cityList1: List<CityItem> = emptyList(),
+        val cityList2: List<CityItem> = emptyList(),
+        val selectedCity1: CityItem = FakeCityItem,
+        val selectedCity2: CityItem = FakeCityItem,
         val peopleCount: String = "",
         val selectedCarIndex: Int = -1,
         val carList: List<String> = listOf("Gentra","Captive","Damas","Nexia","Malibue"),

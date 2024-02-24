@@ -6,10 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.sdk.supergo.di.initKoin
 import com.sdk.supergo.ui.root.RootComponent
 import com.sdk.supergo.ui.root.RootContent
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
+import org.koin.android.ext.koin.androidContext
 
 class AndroidApp : Application() {
     companion object {
@@ -19,6 +21,9 @@ class AndroidApp : Application() {
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
+        initKoin {
+            androidContext(INSTANCE)
+        }
         Napier.base(DebugAntilog())
     }
 }

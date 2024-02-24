@@ -6,13 +6,24 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.sdk.supergo.appDispatchers
+import com.sdk.supergo.core.CityType
+import com.sdk.supergo.data.model.CityItem
+import com.sdk.supergo.data.repository.NetworkRepository
 import com.sdk.supergo.util.logDe
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 internal class HumanStoreFactory(
     private val storeFactory: StoreFactory
-) {
+): KoinComponent {
+
+    private val repository: NetworkRepository by inject()
+
     fun create(): HumanStore = object : HumanStore,
         Store<HumanStore.Intent, HumanStore.State, Nothing> by storeFactory.create(
             name = "HumanStore",
@@ -26,8 +37,8 @@ internal class HumanStoreFactory(
         data object Loading : Message
         data object OnFromChanged : Message
         data object OnToChanged : Message
-        data class OnFromSelected(val city: String) : Message
-        data class OnToSelected(val city: String) : Message
+        data class OnFromSelected(val city: CityItem) : Message
+        data class OnToSelected(val city: CityItem) : Message
         data object OnReplaced : Message
         data object OnLuggage : Message
         data object OnLargeL : Message
@@ -43,6 +54,10 @@ internal class HumanStoreFactory(
         data object OnCloseConfirm : Message
         data object OnBackToOrder : Message
         data object OnConfirmClicked : Message
+        data class OnSuccess(
+            val cityList1: List<CityItem>,
+            val cityList2: List<CityItem>,
+        ): Message
     }
 
     private inner class ExecutorImpl :
@@ -50,8 +65,7 @@ internal class HumanStoreFactory(
             appDispatchers.main
         ) {
         override fun executeAction(action: Unit, getState: () -> HumanStore.State) {
-            super.executeAction(action, getState)
-
+            loadMainScreenData()
         }
 
         override fun executeIntent(intent: HumanStore.Intent, getState: () -> HumanStore.State) {
@@ -80,6 +94,30 @@ internal class HumanStoreFactory(
                 is HumanStore.Intent.OnCloseConfirm -> dispatch(Message.OnCloseConfirm)
                 is HumanStore.Intent.OnBackToOrder -> dispatch(Message.OnBackToOrder)
                 is HumanStore.Intent.OnConfirmClicked -> dispatch(Message.OnConfirmClicked)
+            }
+        }
+        private fun loadMainScreenData() {
+            scope.launch {
+                val cityList1 = mutableListOf<CityItem>()
+                val cityList2 = mutableListOf<CityItem>()
+                repository.getCityList(CityType.ANDIJON)
+                    .catch {
+
+                    }
+                    .collectLatest { list ->
+                        cityList1.clear()
+                        cityList1.addAll(list)
+                    }
+                repository.getCityList(CityType.TOSHKENT)
+                    .catch {
+                        logDe(it.message.toString())
+                    }.collectLatest { list ->
+                        cityList2.clear()
+                        cityList2.addAll(list)
+                    }
+                delay(1000L)
+                logDe(cityList1.toString())
+                dispatch(Message.OnSuccess(cityList1, cityList2))
             }
         }
     }
@@ -124,6 +162,7 @@ internal class HumanStoreFactory(
                 is Message.OnBackToOrder -> copy(isConfirmVisible = false, isOrderVisible = true)
                 is Message.OnCloseConfirm -> copy(isConfirmVisible = false)
                 is Message.OnConfirmClicked -> copy(isConfirmVisible = false)
+                is Message.OnSuccess -> copy(isLoading = false, cityList1 = msg.cityList1, cityList2 = msg.cityList2, selectedCity1 = msg.cityList1[0], selectedCity2 = msg.cityList2[0])
             }
         }
     }

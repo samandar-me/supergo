@@ -51,7 +51,6 @@ import com.sdk.supergo.ui.component.AppButton
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ConfirmDialog(
     component: HumanComponent

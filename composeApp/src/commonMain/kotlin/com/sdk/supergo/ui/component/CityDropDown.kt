@@ -33,16 +33,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sdk.supergo.data.model.CityItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CityDropDown(
     title: String,
     expanded: Boolean,
-    selectedCity: String,
+    selectedCity: CityItem,
     onChanged: () -> Unit,
-    onSelected: (String) -> Unit,
-    cityList: List<String>
+    onSelected: (CityItem) -> Unit,
+    cityList: List<CityItem>
 ) {
     Column {
         Text(text = title, color = Color.Gray)
@@ -59,7 +60,7 @@ fun CityDropDown(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = selectedCity,
+                    text = selectedCity.name,
                     fontSize = 20.sp,
                     modifier = Modifier.fillMaxWidth(0.9f)
                 )
@@ -74,7 +75,7 @@ fun CityDropDown(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = item,
+                                text = item.name,
                                 fontWeight = if (item == selectedCity) FontWeight.Bold else null,
                                 color = if (item == selectedCity) Color.Black else Color.Gray,
                                 fontSize = 20.sp

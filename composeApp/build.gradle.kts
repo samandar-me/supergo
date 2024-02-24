@@ -48,6 +48,9 @@ kotlin {
             implementation(libs.composeImageLoader)
             implementation(libs.napier)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.ktor.core)
             implementation(libs.composeIcons.featherIcons)
             implementation(libs.kotlinx.serialization.json)
@@ -74,13 +77,14 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.sqlDelight.driver.android)
+            implementation(libs.koin.core)
+            implementation(libs.koin.android)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.sqlDelight.driver.native)
         }
-
     }
 }
 

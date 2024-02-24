@@ -84,13 +84,13 @@ fun OrderDialog(
                         Column {
                             ThreeText(
                                 title = state.title1,
-                                desc = state.selectedCity1,
+                                desc = state.selectedCity1.name,
                                 icon = "pushpin.png"
                             )
                             Spacer(Modifier.height(26.dp))
                             ThreeText(
                                 title = state.title2,
-                                desc = state.selectedCity2,
+                                desc = state.selectedCity2.name,
                                 icon = "location.png"
                             )
                         }
@@ -139,10 +139,8 @@ fun OrderDialog(
                                     modifier = Modifier.size(22.dp),
                                     tint = Color.Black
                                 )
-                                if(state.number.isNotBlank()) {
-                                    Spacer(Modifier.width(8.dp))
-                                    Text(text = "+998", color = Color.Black, fontSize = 18.sp)
-                                }
+                                Spacer(Modifier.width(8.dp))
+                                Text(text = "+998", color = Color.Black, fontSize = 18.sp)
                             }
                         },
                         colors = TextFieldDefaults.colors(
