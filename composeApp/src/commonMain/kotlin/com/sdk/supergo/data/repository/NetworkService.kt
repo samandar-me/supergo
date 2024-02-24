@@ -3,6 +3,7 @@ package com.sdk.supergo.data.repository
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import com.sdk.supergo.core.CityType
+import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -20,6 +21,11 @@ internal class NetworkService(
         val response = httpClient.get(BASE_URL + "get-district/") {
             parameter("region", cityType.name.lowercase().capitalize(Locale.current))
         }.body<List<CityItem>>()
+        emit(response)
+    }
+
+    override suspend fun getCarList(): Flow<List<Car>> = flow {
+        val response = httpClient.get(BASE_URL + "get-cars").body<List<Car>>()
         emit(response)
     }
 }

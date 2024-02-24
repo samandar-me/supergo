@@ -11,9 +11,9 @@ data class CityItem(
 )
 val FakeCityItem = CityItem(
     id = 0,
-    name = "Shahar",
+    name = "Shaharni tanlang",
     region = Region(
         id = 1,
-        name = "Shahar"
+        name = "Shaharni tanlang"
     )
 )

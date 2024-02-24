@@ -27,15 +27,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.ui.theme.SeedColor
+import com.seiko.imageloader.rememberImagePainter
 import compose.icons.FeatherIcons
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CarItem(
+    car: Car,
     selected: Boolean,
     onSelected: () -> Unit
 ) {
+    val painter = rememberImagePainter(car.icon)
     Box(
         modifier = Modifier
             .height(150.dp)
@@ -65,14 +69,14 @@ fun CarItem(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "Gentra", fontWeight = FontWeight.Bold)
-                        Text(text = "150.000", fontWeight = FontWeight.Bold)
+                        Text(text = car.name, fontWeight = FontWeight.Bold)
+                        Text(text = "${car.price}", fontWeight = FontWeight.Bold)
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth().weight(1.2f).padding(horizontal = 20.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(text = "3ta", fontSize = 12.sp, color = Color.Gray)
+                        Text(text = car.count.toString(), fontSize = 12.sp, color = Color.Gray)
                         Spacer(Modifier.width(12.dp))
                         Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.LightGray)
                         Text(text = "4", fontSize = 12.sp, color = Color.Gray)
@@ -81,7 +85,7 @@ fun CarItem(
             }
         }
         Image(
-            painter = painterResource("img/car.png"),
+            painter = painter,
             contentDescription = "car",
             modifier = Modifier.size(140.dp),
             alignment = Alignment.TopStart

@@ -3,8 +3,10 @@ package com.sdk.supergo.ui.human
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,8 +42,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sdk.supergo.core.MaskVisualTransformation
 import com.sdk.supergo.ui.component.AppButton
 import org.jetbrains.compose.resources.painterResource
 
@@ -79,9 +83,11 @@ fun OrderDialog(
                 Column {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        //  horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier.weight(2f)
+                        ) {
                             ThreeText(
                                 title = state.title1,
                                 desc = state.selectedCity1.name,
@@ -94,7 +100,9 @@ fun OrderDialog(
                                 icon = "location.png"
                             )
                         }
-                        Column {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        ) {
                             Spacer(
                                 modifier = Modifier
                                     .height(120.dp)
@@ -102,7 +110,9 @@ fun OrderDialog(
                                     .background(Color.DarkGray)
                             )
                         }
-                        Column {
+                        Column(
+                            modifier = Modifier.weight(2f)
+                        ) {
                             ThreeText(
                                 title = "Odam soni",
                                 desc = state.peopleCount,
@@ -111,7 +121,7 @@ fun OrderDialog(
                             Spacer(Modifier.height(26.dp))
                             ThreeText(
                                 title = "Mashina turi",
-                                desc = state.carList[state.selectedCarIndex],
+                                desc = state.carList[state.selectedCarIndex].name,
                                 icon = "car_icon.png"
                             )
                         }
@@ -123,7 +133,9 @@ fun OrderDialog(
                             .padding(horizontal = 16.dp),
                         value = state.number,
                         onValueChange = {
-                            component.onEvent(HumanStore.Intent.OnNumberChanged(it))
+                            if (it.length < 10) {
+                                component.onEvent(HumanStore.Intent.OnNumberChanged(it))
+                            }
                         },
                         placeholder = {
                             Text(text = "Telefon raqam")
@@ -151,7 +163,8 @@ fun OrderDialog(
                         ),
                         textStyle = TextStyle(
                             fontSize = 18.sp
-                        )
+                        ),
+                        visualTransformation = MaskVisualTransformation("(##) ### ## ##")
                     )
                 }
             },
@@ -167,6 +180,7 @@ fun OrderDialog(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ThreeText(
     title: String,
@@ -184,7 +198,16 @@ private fun ThreeText(
         Column {
             Text(text = title, color = Color.Gray)
             Spacer(Modifier.height(6.dp))
-            Text(text = desc, fontSize = 18.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+            Text(
+                text = desc,
+                fontSize = 18.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                modifier = Modifier.basicMarquee(
+                    iterations = Int.MAX_VALUE
+                )
+            )
         }
     }
 }

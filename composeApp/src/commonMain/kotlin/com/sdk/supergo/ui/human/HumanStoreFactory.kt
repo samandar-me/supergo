@@ -7,9 +7,12 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
 import com.sdk.supergo.appDispatchers
 import com.sdk.supergo.core.CityType
+import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
+import com.sdk.supergo.data.model.FakeCityItem
 import com.sdk.supergo.data.repository.NetworkRepository
 import com.sdk.supergo.util.logDe
+import com.sdk.supergo.util.logEe
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -20,7 +23,7 @@ import org.koin.core.component.inject
 
 internal class HumanStoreFactory(
     private val storeFactory: StoreFactory
-): KoinComponent {
+) : KoinComponent {
 
     private val repository: NetworkRepository by inject()
 
@@ -57,7 +60,8 @@ internal class HumanStoreFactory(
         data class OnSuccess(
             val cityList1: List<CityItem>,
             val cityList2: List<CityItem>,
-        ): Message
+            val carList: List<Car>
+        ) : Message
     }
 
     private inner class ExecutorImpl :
@@ -96,13 +100,15 @@ internal class HumanStoreFactory(
                 is HumanStore.Intent.OnConfirmClicked -> dispatch(Message.OnConfirmClicked)
             }
         }
+
         private fun loadMainScreenData() {
             scope.launch {
                 val cityList1 = mutableListOf<CityItem>()
                 val cityList2 = mutableListOf<CityItem>()
+                val carList = mutableListOf<Car>()
                 repository.getCityList(CityType.ANDIJON)
                     .catch {
-
+                        logEe(it.message.toString())
                     }
                     .collectLatest { list ->
                         cityList1.clear()
@@ -110,14 +116,21 @@ internal class HumanStoreFactory(
                     }
                 repository.getCityList(CityType.TOSHKENT)
                     .catch {
-                        logDe(it.message.toString())
+                        logEe(it.message.toString())
                     }.collectLatest { list ->
                         cityList2.clear()
                         cityList2.addAll(list)
                     }
-                delay(1000L)
+                repository.getCarList()
+                    .catch {
+                        logEe(it.message.toString())
+                    }.collectLatest { list ->
+                        carList.clear()
+                        carList.addAll(list)
+                    }
+             //   delay(200L)
                 logDe(cityList1.toString())
-                dispatch(Message.OnSuccess(cityList1, cityList2))
+                dispatch(Message.OnSuccess(cityList1, cityList2, carList))
             }
         }
     }
@@ -162,7 +175,14 @@ internal class HumanStoreFactory(
                 is Message.OnBackToOrder -> copy(isConfirmVisible = false, isOrderVisible = true)
                 is Message.OnCloseConfirm -> copy(isConfirmVisible = false)
                 is Message.OnConfirmClicked -> copy(isConfirmVisible = false)
-                is Message.OnSuccess -> copy(isLoading = false, cityList1 = msg.cityList1, cityList2 = msg.cityList2, selectedCity1 = msg.cityList1[0], selectedCity2 = msg.cityList2[0])
+                is Message.OnSuccess -> copy(
+                    isLoading = false,
+                    cityList1 = msg.cityList1,
+                    cityList2 = msg.cityList2,
+                    carList = msg.carList,
+                    selectedCity1 = msg.cityList1.firstOrNull() ?: FakeCityItem,
+                    selectedCity2 = msg.cityList2.firstOrNull() ?: FakeCityItem
+                )
             }
         }
     }

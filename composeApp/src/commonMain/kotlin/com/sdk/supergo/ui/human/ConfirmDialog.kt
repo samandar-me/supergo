@@ -74,7 +74,14 @@ fun ConfirmDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Kod orqali tastiqlash", fontSize = 20.sp)
+                    IconButton(
+                        onClick = {
+                            component.onEvent(HumanStore.Intent.OnBackToOrder)
+                        }
+                    ) {
+                        Icon(Icons.Default.ArrowBack, "back")
+                    }
+                    Text(text = "Kod orqali tasdiqlash", fontSize = 20.sp)
                     IconButton(
                         onClick = {
                             component.onEvent(HumanStore.Intent.OnCloseConfirm)
@@ -112,23 +119,12 @@ fun ConfirmDialog(
                 }
             },
             confirmButton = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = {
-                            component.onEvent(HumanStore.Intent.OnBackToOrder)
-                        }
-                    ) {
-                        Icon(Icons.Default.ArrowBack, "back")
-                    }
-                    AppButton(
-                        onClick = {
-                            component.onEvent(HumanStore.Intent.OnConfirmClicked)
-                        },
-                        text = "Tastiqlash"
-                    )
-                }
+                AppButton(
+                    onClick = {
+                        component.onEvent(HumanStore.Intent.OnConfirmClicked)
+                    },
+                    text = "Tastiqlash"
+                )
             }
         )
     }

@@ -196,8 +196,9 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                 ) {
                     itemsIndexed(
                         items = state.carList,
-                        itemContent = { index, _ ->
+                        itemContent = { index, item ->
                             CarItem(
+                                car = item,
                                 selected = state.selectedCarIndex == index,
                                 onSelected = {
                                     component.onEvent(HumanStore.Intent.OnCarSelected(index))

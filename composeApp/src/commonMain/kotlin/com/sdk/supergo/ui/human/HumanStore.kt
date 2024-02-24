@@ -1,6 +1,7 @@
 package com.sdk.supergo.ui.human
 
 import com.arkivanov.mvikotlin.core.store.Store
+import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
 import com.sdk.supergo.data.model.FakeCityItem
 
@@ -39,7 +40,7 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         val selectedCity2: CityItem = FakeCityItem,
         val peopleCount: String = "",
         val selectedCarIndex: Int = -1,
-        val carList: List<String> = listOf("Gentra","Captive","Damas","Nexia","Malibue"),
+        val carList: List<Car> = emptyList(),
         val con: Boolean = false,
         val luggage: Boolean = false,
         val largeL: Boolean = false,
