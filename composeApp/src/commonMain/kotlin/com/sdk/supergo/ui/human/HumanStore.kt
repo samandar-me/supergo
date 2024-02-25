@@ -22,6 +22,7 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         data class OnNoteChanged(val note: String): Intent
         data object OnCloseOrder: Intent
         data class OnNumberChanged(val value: String): Intent
+        data class OnOtpChanged(val value: String): Intent
         data object OnSendCode: Intent
         data object OnShowOrder: Intent
         data object OnCloseConfirm: Intent
@@ -48,6 +49,7 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         val number: String = "",
         val isOrderVisible: Boolean = false,
         val isConfirmVisible: Boolean = false,
-        val code: String = ""
+        val code: String = "",
+        val optText: String = ""
     )
 }

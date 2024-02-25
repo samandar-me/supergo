@@ -39,26 +39,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdk.supergo.ui.component.AppButton
+import com.sdk.supergo.ui.component.OtpTextField
+import com.sdk.supergo.util.logDe
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ConfirmDialog(
-    component: HumanComponent
+    state: HumanStore.State,
+    onEvent: (HumanStore.Intent) -> Unit
 ) {
-    val state by component.state.collectAsState()
     if (state.isConfirmVisible) {
         var downTime by remember { mutableStateOf(60) }
-        LaunchedEffect(Unit) {
+        LaunchedEffect(downTime == 60) {
             while (downTime > 0) {
                 delay(1000L)
                 downTime--
@@ -66,7 +70,7 @@ fun ConfirmDialog(
         }
         AlertDialog(
             onDismissRequest = {
-                component.onEvent(HumanStore.Intent.OnCloseConfirm)
+                onEvent(HumanStore.Intent.OnCloseConfirm)
             },
             title = {
                 Row(
@@ -76,7 +80,7 @@ fun ConfirmDialog(
                 ) {
                     IconButton(
                         onClick = {
-                            component.onEvent(HumanStore.Intent.OnBackToOrder)
+                            onEvent(HumanStore.Intent.OnBackToOrder)
                         }
                     ) {
                         Icon(Icons.Default.ArrowBack, "back")
@@ -84,7 +88,7 @@ fun ConfirmDialog(
                     Text(text = "Kod orqali tasdiqlash", fontSize = 20.sp)
                     IconButton(
                         onClick = {
-                            component.onEvent(HumanStore.Intent.OnCloseConfirm)
+                            onEvent(HumanStore.Intent.OnCloseConfirm)
                         }
                     ) {
                         Icon(
@@ -104,11 +108,18 @@ fun ConfirmDialog(
                     Text(
                         text = "Sizning +998${state.number} raqamingizga kod yuborildi. "
                     )
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(16.dp))
+                    OtpTextField(
+                        otpText = state.optText,
+                        onOtpTextChange = { value ->
+                            onEvent(HumanStore.Intent.OnOtpChanged(value))
+                        }
+                    )
+                    Spacer(Modifier.height(16.dp))
                     if (downTime == 0) {
                         TextButton(
                             onClick = {
-
+                                downTime = 60
                             }
                         ) {
                             Text(text = "Qayta jo'natish")
@@ -121,9 +132,9 @@ fun ConfirmDialog(
             confirmButton = {
                 AppButton(
                     onClick = {
-                        component.onEvent(HumanStore.Intent.OnConfirmClicked)
+                        onEvent(HumanStore.Intent.OnConfirmClicked)
                     },
-                    text = "Tastiqlash"
+                    text = "Tasdiqlash"
                 )
             }
         )

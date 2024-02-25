@@ -53,6 +53,7 @@ internal class HumanStoreFactory(
         data object OnCloseOrder : Message
         data object OnShowOrder : Message
         data class OnNumberChanged(val value: String) : Message
+        data class OnOtpChanged(val value: String) : Message
         data object OnSendCode : Message
         data object OnCloseConfirm : Message
         data object OnBackToOrder : Message
@@ -98,6 +99,7 @@ internal class HumanStoreFactory(
                 is HumanStore.Intent.OnCloseConfirm -> dispatch(Message.OnCloseConfirm)
                 is HumanStore.Intent.OnBackToOrder -> dispatch(Message.OnBackToOrder)
                 is HumanStore.Intent.OnConfirmClicked -> dispatch(Message.OnConfirmClicked)
+                is HumanStore.Intent.OnOtpChanged -> dispatch(Message.OnOtpChanged(intent.value))
             }
         }
 
@@ -128,8 +130,6 @@ internal class HumanStoreFactory(
                         carList.clear()
                         carList.addAll(list)
                     }
-             //   delay(200L)
-                logDe(cityList1.toString())
                 dispatch(Message.OnSuccess(cityList1, cityList2, carList))
             }
         }
@@ -171,10 +171,11 @@ internal class HumanStoreFactory(
                 is Message.OnNumberChanged -> copy(number = msg.value)
                 is Message.OnCloseOrder -> copy(isOrderVisible = false)
                 is Message.OnShowOrder -> copy(isOrderVisible = true)
-                is Message.OnSendCode -> copy(isOrderVisible = false, isConfirmVisible = true)
-                is Message.OnBackToOrder -> copy(isConfirmVisible = false, isOrderVisible = true)
+                is Message.OnSendCode -> copy(isOrderVisible = false, isConfirmVisible = true, optText = "")
+                is Message.OnBackToOrder -> copy(isConfirmVisible = false, isOrderVisible = true, optText = "")
                 is Message.OnCloseConfirm -> copy(isConfirmVisible = false)
                 is Message.OnConfirmClicked -> copy(isConfirmVisible = false)
+                is Message.OnOtpChanged -> copy(optText = msg.value)
                 is Message.OnSuccess -> copy(
                     isLoading = false,
                     cityList1 = msg.cityList1,

@@ -7,16 +7,20 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -28,6 +32,7 @@ import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -35,12 +40,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -51,13 +60,14 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun OrderDialog(
-    component: HumanComponent
+    state: HumanStore.State,
+    onEvent: (HumanStore.Intent) -> Unit
 ) {
-    val state by component.state.collectAsState()
     if (state.isOrderVisible) {
         AlertDialog(
+            modifier = Modifier.windowInsetsPadding(WindowInsets.ime),
             onDismissRequest = {
-                component.onEvent(HumanStore.Intent.OnCloseOrder)
+               onEvent(HumanStore.Intent.OnCloseOrder)
             },
             title = {
                 Row(
@@ -68,7 +78,7 @@ fun OrderDialog(
                     Text(text = "Sizning buyurtmangiz", fontSize = 20.sp)
                     IconButton(
                         onClick = {
-                            component.onEvent(HumanStore.Intent.OnCloseOrder)
+                            onEvent(HumanStore.Intent.OnCloseOrder)
                         }
                     ) {
                         Icon(
@@ -82,8 +92,7 @@ fun OrderDialog(
             text = {
                 Column {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        //  horizontalArrangement = Arrangement.SpaceBetween
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
                             modifier = Modifier.weight(2f)
@@ -134,14 +143,15 @@ fun OrderDialog(
                         value = state.number,
                         onValueChange = {
                             if (it.length < 10) {
-                                component.onEvent(HumanStore.Intent.OnNumberChanged(it))
+                                onEvent(HumanStore.Intent.OnNumberChanged(it))
                             }
                         },
                         placeholder = {
                             Text(text = "Telefon raqam")
                         },
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
                         ),
                         leadingIcon = {
                             Row {
@@ -171,7 +181,7 @@ fun OrderDialog(
             confirmButton = {
                 AppButton(
                     onClick = {
-                        component.onEvent(HumanStore.Intent.OnSendCode)
+                        onEvent(HumanStore.Intent.OnSendCode)
                     },
                     text = "Kod jo’natish"
                 )

@@ -50,6 +50,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -70,8 +72,12 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
-    val state by component.state.collectAsState()
+fun HumanContent(
+    paddingValues: PaddingValues,
+    focusRequester: FocusRequester,
+    state: HumanStore.State,
+    onEvent: (HumanStore.Intent) -> Unit
+) {
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
     if (state.isLoading) {
@@ -132,10 +138,10 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                             expanded = state.fromExpanded,
                             selectedCity = state.selectedCity1,
                             onChanged = {
-                                component.onEvent(HumanStore.Intent.OnFromChanged)
+                                onEvent(HumanStore.Intent.OnFromChanged)
                             },
                             onSelected = { s ->
-                                component.onEvent(HumanStore.Intent.OnFromSelected(s))
+                                onEvent(HumanStore.Intent.OnFromSelected(s))
                             },
                             cityList = state.cityList1
                         )
@@ -145,10 +151,10 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                             expanded = state.toExpanded,
                             selectedCity = state.selectedCity2,
                             onChanged = {
-                                component.onEvent(HumanStore.Intent.OnToChanged)
+                                onEvent(HumanStore.Intent.OnToChanged)
                             },
                             onSelected = { s ->
-                                component.onEvent(HumanStore.Intent.OnToSelected(s))
+                                onEvent(HumanStore.Intent.OnToSelected(s))
                             },
                             cityList = state.cityList2
                         )
@@ -161,7 +167,7 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                         Box(
                             modifier = Modifier.size(45.dp).clip(CircleShape)
                                 .background(Color(0xFFEDEDED)).clickable {
-                                    component.onEvent(HumanStore.Intent.OnReplaced)
+                                    onEvent(HumanStore.Intent.OnReplaced)
                                 },
                             contentAlignment = Alignment.Center
                         ) {
@@ -176,9 +182,10 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
             }
             item {
                 PeopleCountSection(
+                    focusRequester = focusRequester,
                     state.peopleCount,
                     onChanged = {
-                        component.onEvent(HumanStore.Intent.OnPeopleCountChanged(it))
+                        onEvent(HumanStore.Intent.OnPeopleCountChanged(it))
                     }
                 )
             }
@@ -201,7 +208,7 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                                 car = item,
                                 selected = state.selectedCarIndex == index,
                                 onSelected = {
-                                    component.onEvent(HumanStore.Intent.OnCarSelected(index))
+                                    onEvent(HumanStore.Intent.OnCarSelected(index))
                                 }
                             )
                         }
@@ -214,13 +221,13 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                     conditioner = state.con,
                     largeLug = state.largeL,
                     onConditionerChanged = {
-                        component.onEvent(HumanStore.Intent.OnCon)
+                        onEvent(HumanStore.Intent.OnCon)
                     },
                     onLuggageChanged = {
-                        component.onEvent(HumanStore.Intent.OnLuggage)
+                        onEvent(HumanStore.Intent.OnLuggage)
                     },
                     onLargeLugChanged = {
-                        component.onEvent(HumanStore.Intent.OnLarge)
+                        onEvent(HumanStore.Intent.OnLarge)
                     },
                 )
             }
@@ -228,7 +235,7 @@ fun HumanContent(component: HumanComponent, paddingValues: PaddingValues) {
                 NoteToDriver(
                     value = state.noteToDriver,
                     onChanged = {
-                        component.onEvent(HumanStore.Intent.OnNoteChanged(it))
+                        onEvent(HumanStore.Intent.OnNoteChanged(it))
                     }
                 )
             }
@@ -340,12 +347,14 @@ private fun CheckText(
 
 @Composable
 private fun PeopleCountSection(
+    focusRequester: FocusRequester,
     value: String,
     onChanged: (String) -> Unit
 ) {
     TextField(
         modifier = Modifier
             .fillMaxWidth()
+            .focusRequester(focusRequester)
             .padding(horizontal = 16.dp),
         value = value,
         onValueChange = {
