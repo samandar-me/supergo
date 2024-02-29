@@ -1,11 +1,8 @@
-package com.sdk.supergo.ui.intro
+package com.sdk.supergo.ui.profile
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.mvikotlin.core.instancekeeper.getStore
-import com.arkivanov.mvikotlin.core.store.StoreFactory
-import kotlinx.coroutines.flow.StateFlow
 
-class IntroComponent(
+class ProfileComponent(
     componentContext: ComponentContext,
    // storeFactory: StoreFactory,
     private val output: (Output) -> Unit
@@ -23,8 +20,6 @@ class IntroComponent(
         output(output)
     }
     sealed interface Output {
-        data object OnHumanClicked: Output
-        data object OnDeliverClicked: Output
-        data object OnProfileClicked: Output
+        data object OnBack: Output
     }
 }

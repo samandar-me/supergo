@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -29,7 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.ui.theme.SeedColor
+import com.seiko.imageloader.ImageLoader
+import com.seiko.imageloader.model.ImageAction
+import com.seiko.imageloader.model.ImageResult
+import com.seiko.imageloader.rememberImageAction
+import com.seiko.imageloader.rememberImageActionPainter
 import com.seiko.imageloader.rememberImagePainter
+import com.seiko.imageloader.rememberImageResultPainter
 import compose.icons.FeatherIcons
 import org.jetbrains.compose.resources.painterResource
 
@@ -39,7 +46,8 @@ fun CarItem(
     selected: Boolean,
     onSelected: () -> Unit
 ) {
-    val painter = rememberImagePainter(car.icon)
+    val action = rememberImageAction(car.icon)
+
     Box(
         modifier = Modifier
             .height(150.dp)
@@ -63,7 +71,13 @@ fun CarItem(
                         modifier = Modifier.fillMaxWidth(.7f).weight(2f),
                         shape = RoundedCornerShape(topStart = 18.dp, bottomEnd = 18.dp),
                         color = if (selected) SeedColor else Color.LightGray
-                    ) {}
+                    ) {
+                        if (action.value is ImageAction.Loading) {
+                            Box(modifier = Modifier.size(24.dp), contentAlignment = Alignment.Center) {
+                                Loading()
+                            }
+                        }
+                    }
                     Row(
                         modifier = Modifier.fillMaxWidth().weight(1.2f).padding(horizontal = 20.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -78,17 +92,24 @@ fun CarItem(
                     ) {
                         Text(text = car.count.toString(), fontSize = 12.sp, color = Color.Gray)
                         Spacer(Modifier.width(12.dp))
-                        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(18.dp), tint = Color.LightGray)
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                            tint = Color.LightGray
+                        )
                         Text(text = "4", fontSize = 12.sp, color = Color.Gray)
                     }
                 }
             }
         }
-        Image(
-            painter = painter,
-            contentDescription = "car",
-            modifier = Modifier.size(140.dp),
-            alignment = Alignment.TopStart
-        )
+        if (action.value is ImageAction.Success) {
+            Image(
+                painter = rememberImageActionPainter(action.value),
+                contentDescription = null,
+                modifier = Modifier.size(140.dp),
+                alignment = Alignment.TopStart
+            )
+        }
     }
 }

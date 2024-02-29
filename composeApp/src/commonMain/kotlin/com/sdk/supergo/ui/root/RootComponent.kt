@@ -12,11 +12,13 @@ import com.arkivanov.essenty.parcelable.Parcelize
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.sdk.supergo.ui.human.HumanComponent
 import com.sdk.supergo.ui.intro.IntroComponent
+import com.sdk.supergo.ui.profile.ProfileComponent
 
 class RootComponent internal constructor(
     componentContext: ComponentContext,
     private val intro: (ComponentContext, (IntroComponent.Output) -> Unit) -> IntroComponent,
     private val human: (ComponentContext, (HumanComponent.Output) -> Unit) -> HumanComponent,
+    private val profile: (ComponentContext, (ProfileComponent.Output) -> Unit) -> ProfileComponent,
 ) : ComponentContext by componentContext {
     constructor(
         componentContext: ComponentContext,
@@ -36,6 +38,13 @@ class RootComponent internal constructor(
                 storeFactory = storeFactory,
                 output = output
             )
+        },
+        profile = { childContext, output ->
+            ProfileComponent(
+                componentContext = childContext,
+              //  storeFactory = storeFactory,
+                output = output
+            )
         }
     )
 
@@ -53,15 +62,20 @@ class RootComponent internal constructor(
         when(configuration) {
             is Configuration.Intro -> Child.Intro(intro(componentContext, ::onIntroOutput))
             is Configuration.Human -> Child.Human(human(componentContext, ::onHumanOutput))
+            is Configuration.Profile -> Child.Profile(profile(componentContext, ::onProfileOutput))
         }
 
     private fun onIntroOutput(output: IntroComponent.Output) = when(output) {
         is IntroComponent.Output.OnHumanClicked -> navigation.push(Configuration.Human)
         is IntroComponent.Output.OnDeliverClicked -> Unit //navigation.push(Configuration.D)
+        is IntroComponent.Output.OnProfileClicked -> navigation.push(Configuration.Profile)
     }
 
     private fun onHumanOutput(output: HumanComponent.Output) = when(output) {
         is HumanComponent.Output.OnBack -> navigation.pop()
+    }
+    private fun onProfileOutput(output: ProfileComponent.Output) = when(output) {
+        is ProfileComponent.Output.OnBack -> navigation.pop()
     }
 
     private sealed interface Configuration: Parcelable {
@@ -70,9 +84,12 @@ class RootComponent internal constructor(
 
         @Parcelize
         data object Human: Configuration
+        @Parcelize
+        data object Profile: Configuration
     }
     sealed class Child {
         data class Intro(val component: IntroComponent): Child()
         data class Human(val component: HumanComponent): Child()
+        data class Profile(val component: ProfileComponent): Child()
     }
 }

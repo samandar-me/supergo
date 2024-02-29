@@ -58,6 +58,7 @@ fun IntroScreen(component: IntroComponent) {
                         scope.launch {
                             drawerState.close()
                         }
+                        component.onOutput(IntroComponent.Output.OnProfileClicked)
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
