@@ -50,6 +50,8 @@ interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
         val isOrderVisible: Boolean = false,
         val isConfirmVisible: Boolean = false,
         val code: String = "",
-        val optText: String = ""
+        val optText: String = "",
+        val isOrderBtnLoading: Boolean = false,
+        val isConfirmBtnLoading: Boolean = false,
     )
 }

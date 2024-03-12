@@ -8,4 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface NetworkRepository {
     suspend fun getCityList(cityType: CityType): Flow<List<CityItem>>
     suspend fun getCarList(): Flow<List<Car>>
+    suspend fun sendPhoneNumber(number: String): Flow<Boolean>
+    suspend fun sendOrder()
 }

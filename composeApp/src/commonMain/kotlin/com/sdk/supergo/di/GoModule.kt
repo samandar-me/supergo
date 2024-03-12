@@ -42,6 +42,7 @@ val goModule = module {
                 }
                 level = LogLevel.ALL
             }
+
         }
     }
     factory<NetworkRepository> {

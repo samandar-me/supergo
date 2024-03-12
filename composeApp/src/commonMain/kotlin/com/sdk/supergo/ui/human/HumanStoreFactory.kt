@@ -16,7 +16,6 @@ import com.sdk.supergo.util.logEe
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -37,7 +36,6 @@ internal class HumanStoreFactory(
         ) {}
 
     private sealed interface Message {
-        data object Loading : Message
         data object OnFromChanged : Message
         data object OnToChanged : Message
         data class OnFromSelected(val city: CityItem) : Message
@@ -54,10 +52,11 @@ internal class HumanStoreFactory(
         data object OnShowOrder : Message
         data class OnNumberChanged(val value: String) : Message
         data class OnOtpChanged(val value: String) : Message
-        data object OnSendCode : Message
         data object OnCloseConfirm : Message
         data object OnBackToOrder : Message
         data object OnConfirmClicked : Message
+        data object OnShowConfirm : Message
+        data object OnOrderBtnStateChanged: Message
         data class OnSuccess(
             val cityList1: List<CityItem>,
             val cityList2: List<CityItem>,
@@ -75,6 +74,8 @@ internal class HumanStoreFactory(
 
         override fun executeIntent(intent: HumanStore.Intent, getState: () -> HumanStore.State) {
             when (intent) {
+                is HumanStore.Intent.OnNumberChanged -> dispatch(Message.OnNumberChanged(intent.value))
+                is HumanStore.Intent.OnSendCode -> sendCode(getState().number)
                 is HumanStore.Intent.OnFromChanged -> dispatch(Message.OnFromChanged)
                 is HumanStore.Intent.OnToChanged -> dispatch(Message.OnToChanged)
                 is HumanStore.Intent.OnFromSelected -> dispatch(Message.OnFromSelected(intent.city))
@@ -92,14 +93,27 @@ internal class HumanStoreFactory(
                 is HumanStore.Intent.OnCon -> dispatch(Message.OnCon)
                 is HumanStore.Intent.OnOrderClicked -> dispatch(Message.OnOrderClicked)
                 is HumanStore.Intent.OnNoteChanged -> dispatch(Message.OnNoteChanged(intent.note))
-                is HumanStore.Intent.OnNumberChanged -> dispatch(Message.OnNumberChanged(intent.value))
-                is HumanStore.Intent.OnSendCode -> dispatch(Message.OnSendCode)
                 is HumanStore.Intent.OnCloseOrder -> dispatch(Message.OnCloseOrder)
                 is HumanStore.Intent.OnShowOrder -> dispatch(Message.OnShowOrder)
                 is HumanStore.Intent.OnCloseConfirm -> dispatch(Message.OnCloseConfirm)
                 is HumanStore.Intent.OnBackToOrder -> dispatch(Message.OnBackToOrder)
                 is HumanStore.Intent.OnConfirmClicked -> dispatch(Message.OnConfirmClicked)
                 is HumanStore.Intent.OnOtpChanged -> dispatch(Message.OnOtpChanged(intent.value))
+            }
+        }
+
+        private fun sendCode(code: String) {
+          //  dispatch(Message.OnSendCode)
+            dispatch(Message.OnOrderBtnStateChanged)
+            scope.launch {
+                val response = repository.sendPhoneNumber(code)
+                response.collectLatest {
+                    delay(1000L)
+                    dispatch(Message.OnOrderBtnStateChanged)
+                    if(!it) return@collectLatest ////is Message.OnSendCode -> copy(isOrderVisible = false, isConfirmVisible = true, optText = "")
+                    dispatch(Message.OnCloseOrder)
+                    dispatch(Message.OnShowConfirm)
+                }
             }
         }
 
@@ -138,7 +152,8 @@ internal class HumanStoreFactory(
     private object ReducerImpl : Reducer<HumanStore.State, Message> {
         override fun HumanStore.State.reduce(msg: Message): HumanStore.State {
             return when (msg) {
-                is Message.Loading -> copy()
+                is Message.OnShowConfirm -> copy(isConfirmVisible = true)
+                is Message.OnOrderBtnStateChanged -> copy(isOrderBtnLoading = !isOrderBtnLoading)
                 is Message.OnFromChanged -> copy(fromExpanded = !fromExpanded)
                 is Message.OnToChanged -> copy(toExpanded = !toExpanded)
                 is Message.OnReplaced -> {
@@ -171,7 +186,6 @@ internal class HumanStoreFactory(
                 is Message.OnNumberChanged -> copy(number = msg.value)
                 is Message.OnCloseOrder -> copy(isOrderVisible = false)
                 is Message.OnShowOrder -> copy(isOrderVisible = true)
-                is Message.OnSendCode -> copy(isOrderVisible = false, isConfirmVisible = true, optText = "")
                 is Message.OnBackToOrder -> copy(isConfirmVisible = false, isOrderVisible = true, optText = "")
                 is Message.OnCloseConfirm -> copy(isConfirmVisible = false)
                 is Message.OnConfirmClicked -> copy(isConfirmVisible = false)

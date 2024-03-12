@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdk.supergo.core.MaskVisualTransformation
 import com.sdk.supergo.ui.component.AppButton
+import com.sdk.supergo.ui.component.Loading
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -179,12 +181,21 @@ fun OrderDialog(
                 }
             },
             confirmButton = {
-                AppButton(
-                    onClick = {
-                        onEvent(HumanStore.Intent.OnSendCode)
-                    },
-                    text = "Kod jo’natish"
-                )
+                if(state.isOrderBtnLoading) {
+                    Row(modifier = Modifier.fillMaxWidth().height(55.dp)) {
+                        Loading()
+                    }
+                } else {
+                    AppButton(
+                        onClick = {
+                            if(state.number.trim().isBlank()) {
+                                return@AppButton
+                            }
+                            onEvent(HumanStore.Intent.OnSendCode)
+                        },
+                        text = "Kod jo’natish"
+                    )
+                }
             }
         )
     }
