@@ -19,6 +19,7 @@ fun AppButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     text: String,
+    color: Color = Color.Black,
     size: Int = 16
 ) {
     Button(
@@ -29,7 +30,7 @@ fun AppButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = SeedColor,
-            contentColor = Color.Black
+            contentColor = color
         )
     ) {
         Text(text = text, fontSize = (size).sp)

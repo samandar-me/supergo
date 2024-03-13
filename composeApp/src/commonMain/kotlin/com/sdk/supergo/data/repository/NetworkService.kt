@@ -6,6 +6,7 @@ import com.sdk.supergo.core.CityType
 import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
 import com.sdk.supergo.data.model.CodeResponse
+import com.sdk.supergo.data.model.Order
 import com.sdk.supergo.data.model.SendCode
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -49,5 +50,30 @@ internal class NetworkService(
             }
         )
         emit(response.status == HttpStatusCode.OK)
+    }
+
+    override suspend fun sendOrder(order: Order): Flow<Boolean> = flow {
+        val params = Parameters.build {
+            append("phone", order.phone)
+            append("code", order.code)
+            append("tg_id", "1")
+            append("where", order.where)
+            append("where_to", order.whereTo)
+            append("person", order.person.toString())
+            append("is_delivery", order.isDelivery.cap())
+            append("baggage", order.baggage.cap())
+            append("big_baggage", order.bigBaggage.cap())
+            append("conditioner", order.conditioner.cap())
+            append("comment", order.comment)
+            append("car_id", order.carId)
+        }
+        val response = httpClient.submitForm(
+            url = BASE_URL + "order/",
+            formParameters = params
+        )
+        emit(response.status == HttpStatusCode.Created || response.status == HttpStatusCode.OK)
+    }
+    fun Boolean.cap(): String {
+        return this.toString().capitalize(Locale.current)
     }
 }

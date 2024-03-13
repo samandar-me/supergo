@@ -16,12 +16,14 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.sdk.supergo.ui.component.AppButton
 import com.sdk.supergo.ui.component.ProfileImage
@@ -34,6 +36,14 @@ fun HumanScreen(component: HumanComponent) {
     val snackBarHostState = remember { SnackbarHostState() }
     val state by component.state.collectAsState()
     val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(state.isSuccess) {
+        if(state.isSuccess == true) {
+            snackBarHostState.showSnackbar("Buyurtma berildi")
+        }
+    }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(
@@ -76,6 +86,7 @@ fun HumanScreen(component: HumanComponent) {
                         }
                         return@AppButton
                     }
+                    focusManager.clearFocus()
                     component.onEvent(HumanStore.Intent.OnShowOrder)
                 }
             )

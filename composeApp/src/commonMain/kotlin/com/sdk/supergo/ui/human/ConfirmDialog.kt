@@ -22,10 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdk.supergo.ui.component.AppButton
+import com.sdk.supergo.ui.component.Loading
 import com.sdk.supergo.ui.component.OtpTextField
+import com.sdk.supergo.util.logDe
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 
@@ -104,12 +107,23 @@ fun ConfirmDialog(
                 }
             },
             confirmButton = {
-                AppButton(
-                    onClick = {
-                        onEvent(HumanStore.Intent.OnConfirmClicked)
-                    },
-                    text = "Tasdiqlash"
-                )
+                if(state.isConfirmBtnLoading) {
+                    Row(modifier = Modifier.fillMaxWidth().height(55.dp)) {
+                        Loading()
+                    }
+                } else {
+                    AppButton(
+                        onClick = {
+                            if(state.optText.length != 4) {
+                                return@AppButton
+                            }
+
+                            onEvent(HumanStore.Intent.OnConfirmClicked)
+                        },
+                        text = if(state.isSuccess == null) "Tasdiqlash" else "Kod noto'rg'i!",
+                        color = if(state.isSuccess == null) Color.Black else Color.Red
+                    )
+                }
             }
         )
     }

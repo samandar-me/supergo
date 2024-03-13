@@ -183,7 +183,7 @@ fun HumanContent(
             item {
                 PeopleCountSection(
                     focusRequester = focusRequester,
-                    state.peopleCount,
+                    value = state.peopleCount,
                     onChanged = {
                         onEvent(HumanStore.Intent.OnPeopleCountChanged(it))
                     }

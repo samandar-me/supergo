@@ -58,6 +58,7 @@ import androidx.compose.ui.unit.sp
 import com.sdk.supergo.core.MaskVisualTransformation
 import com.sdk.supergo.ui.component.AppButton
 import com.sdk.supergo.ui.component.Loading
+import com.sdk.supergo.util.logDe
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -188,7 +189,7 @@ fun OrderDialog(
                 } else {
                     AppButton(
                         onClick = {
-                            if(state.number.trim().isBlank()) {
+                            if(state.number.trim().length != 9) {
                                 return@AppButton
                             }
                             onEvent(HumanStore.Intent.OnSendCode)

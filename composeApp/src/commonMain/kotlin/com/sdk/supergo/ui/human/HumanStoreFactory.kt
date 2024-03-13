@@ -10,6 +10,7 @@ import com.sdk.supergo.core.CityType
 import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
 import com.sdk.supergo.data.model.FakeCityItem
+import com.sdk.supergo.data.model.Order
 import com.sdk.supergo.data.repository.NetworkRepository
 import com.sdk.supergo.util.logDe
 import com.sdk.supergo.util.logEe
@@ -54,9 +55,10 @@ internal class HumanStoreFactory(
         data class OnOtpChanged(val value: String) : Message
         data object OnCloseConfirm : Message
         data object OnBackToOrder : Message
-        data object OnConfirmClicked : Message
         data object OnShowConfirm : Message
-        data object OnOrderBtnStateChanged: Message
+        data object OnOrderBtnStateChanged : Message
+        data object OnConfirmBtnStateChanged : Message
+        data class OnSuccessChange(val success: Boolean) : Message
         data class OnSuccess(
             val cityList1: List<CityItem>,
             val cityList2: List<CityItem>,
@@ -97,20 +99,48 @@ internal class HumanStoreFactory(
                 is HumanStore.Intent.OnShowOrder -> dispatch(Message.OnShowOrder)
                 is HumanStore.Intent.OnCloseConfirm -> dispatch(Message.OnCloseConfirm)
                 is HumanStore.Intent.OnBackToOrder -> dispatch(Message.OnBackToOrder)
-                is HumanStore.Intent.OnConfirmClicked -> dispatch(Message.OnConfirmClicked)
+                is HumanStore.Intent.OnConfirmClicked -> order(getState())
                 is HumanStore.Intent.OnOtpChanged -> dispatch(Message.OnOtpChanged(intent.value))
             }
         }
 
+        private fun order(state: HumanStore.State) {
+            logDe(state.toString())
+            dispatch(Message.OnConfirmBtnStateChanged)
+            scope.launch {
+                val response = repository.sendOrder(
+                    Order(
+                        phone = state.number,
+                        code = state.optText,
+                        where = state.selectedCity1.id.toString(),
+                        whereTo = state.selectedCity2.id.toString(),
+                        person = state.peopleCount.toInt(),
+                        isDelivery = false,
+                        baggage = state.luggage,
+                        bigBaggage = state.largeL,
+                        conditioner = state.con,
+                        carId = state.carList[state.selectedCarIndex].id.toString(),
+                        comment = state.noteToDriver
+                    )
+                )
+                delay(1000L)
+                response.collectLatest {
+                    dispatch(Message.OnConfirmBtnStateChanged)
+                    dispatch(Message.OnSuccessChange(it))
+                    if (it)
+                        dispatch(Message.OnCloseConfirm)
+                }
+            }
+        }
+
         private fun sendCode(code: String) {
-          //  dispatch(Message.OnSendCode)
             dispatch(Message.OnOrderBtnStateChanged)
             scope.launch {
                 val response = repository.sendPhoneNumber(code)
                 response.collectLatest {
-                    delay(1000L)
+                    delay(800L)
                     dispatch(Message.OnOrderBtnStateChanged)
-                    if(!it) return@collectLatest ////is Message.OnSendCode -> copy(isOrderVisible = false, isConfirmVisible = true, optText = "")
+                    if (!it) return@collectLatest
                     dispatch(Message.OnCloseOrder)
                     dispatch(Message.OnShowConfirm)
                 }
@@ -153,6 +183,7 @@ internal class HumanStoreFactory(
         override fun HumanStore.State.reduce(msg: Message): HumanStore.State {
             return when (msg) {
                 is Message.OnShowConfirm -> copy(isConfirmVisible = true)
+                is Message.OnSuccessChange -> copy(isSuccess = msg.success)
                 is Message.OnOrderBtnStateChanged -> copy(isOrderBtnLoading = !isOrderBtnLoading)
                 is Message.OnFromChanged -> copy(fromExpanded = !fromExpanded)
                 is Message.OnToChanged -> copy(toExpanded = !toExpanded)
@@ -186,10 +217,15 @@ internal class HumanStoreFactory(
                 is Message.OnNumberChanged -> copy(number = msg.value)
                 is Message.OnCloseOrder -> copy(isOrderVisible = false)
                 is Message.OnShowOrder -> copy(isOrderVisible = true)
-                is Message.OnBackToOrder -> copy(isConfirmVisible = false, isOrderVisible = true, optText = "")
-                is Message.OnCloseConfirm -> copy(isConfirmVisible = false)
-                is Message.OnConfirmClicked -> copy(isConfirmVisible = false)
-                is Message.OnOtpChanged -> copy(optText = msg.value)
+                is Message.OnBackToOrder -> copy(
+                    isConfirmVisible = false,
+                    isOrderVisible = true,
+                    optText = ""
+                )
+
+                is Message.OnCloseConfirm -> copy(isConfirmVisible = false, number = "", optText = "", isSuccess = null)
+                is Message.OnConfirmBtnStateChanged -> copy(isConfirmBtnLoading = !isConfirmBtnLoading)
+                is Message.OnOtpChanged -> copy(optText = msg.value, isSuccess = null)
                 is Message.OnSuccess -> copy(
                     isLoading = false,
                     cityList1 = msg.cityList1,
