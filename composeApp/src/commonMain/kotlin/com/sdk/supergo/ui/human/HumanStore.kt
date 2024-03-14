@@ -3,7 +3,6 @@ package com.sdk.supergo.ui.human
 import com.arkivanov.mvikotlin.core.store.Store
 import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
-import com.sdk.supergo.data.model.FakeCityItem
 
 interface HumanStore : Store<HumanStore.Intent, HumanStore.State, Nothing> {
     sealed interface Intent {

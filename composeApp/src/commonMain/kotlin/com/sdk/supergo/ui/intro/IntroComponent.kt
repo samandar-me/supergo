@@ -3,22 +3,23 @@ package com.sdk.supergo.ui.intro
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class IntroComponent(
     componentContext: ComponentContext,
-   // storeFactory: StoreFactory,
+    storeFactory: StoreFactory,
     private val output: (Output) -> Unit
 ): ComponentContext by componentContext {
-//    private val mainStore = instanceKeeper.getStore {
-//        IntroStoreFactory(
-//            storeFactory = storeFactory
-//        ).create()
-//    }
-//    val state: StateFlow<IntroStore.S>
-//    fun onEvent(event: IntroStore.Intent) {
-//        mainStore.accept(event)
-//    }
+    private val introStore = instanceKeeper.getStore {
+        IntroStoreFactory(
+            storeFactory = storeFactory
+        ).create()
+    }
+    val state: StateFlow<IntroStore.State> = introStore.stateFlow
+    fun onEvent(event: IntroStore.Intent) {
+        introStore.accept(event)
+    }
     fun onOutput(output: Output) {
         output(output)
     }

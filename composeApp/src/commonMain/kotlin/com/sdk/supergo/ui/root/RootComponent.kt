@@ -4,8 +4,13 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.navigate
 import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.popTo
+import com.arkivanov.decompose.router.stack.popWhile
 import com.arkivanov.decompose.router.stack.push
+import com.arkivanov.decompose.router.stack.replaceAll
+import com.arkivanov.decompose.router.stack.replaceCurrent
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
@@ -28,7 +33,7 @@ class RootComponent internal constructor(
         intro = { childContext, output ->
             IntroComponent(
                 componentContext = childContext,
-           //     storeFactory = storeFactory,
+                storeFactory = storeFactory,
                 output = output
             )
         },
@@ -74,8 +79,9 @@ class RootComponent internal constructor(
     private fun onHumanOutput(output: HumanComponent.Output) = when(output) {
         is HumanComponent.Output.OnBack -> navigation.pop()
         is HumanComponent.Output.OnSuccess -> {
-            navigation.pop()
-            navigation.push(Configuration.Intro)
+            navigation.navigate {
+                listOf(Configuration.Intro)
+            }
         }
     }
     private fun onProfileOutput(output: ProfileComponent.Output) = when(output) {

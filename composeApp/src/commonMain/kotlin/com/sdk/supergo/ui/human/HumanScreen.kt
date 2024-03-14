@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.sdk.supergo.core.Constants
 import com.sdk.supergo.ui.component.AppButton
 import com.sdk.supergo.ui.component.ProfileImage
 import kotlinx.coroutines.launch
@@ -40,8 +41,8 @@ fun HumanScreen(component: HumanComponent) {
 
     LaunchedEffect(state.isSuccess) {
         if(state.isSuccess == true) {
+            Constants.isOrderSuccess = true
             component.onOutput(HumanComponent.Output.OnSuccess)
-           // snackBarHostState.showSnackbar("Buyurtma berildi")
         }
     }
 
@@ -73,10 +74,14 @@ fun HumanScreen(component: HumanComponent) {
                 text = "Buyurtma berish",
                 onClick = {
                     if (state.peopleCount.isBlank()) {
-                        focusRequester.requestFocus()
-                        scope.launch {
-                            snackBarHostState.currentSnackbarData?.dismiss()
-                            snackBarHostState.showSnackbar("Odamlar sonini kiriting!")
+                        try {
+                            focusRequester.requestFocus()
+                            scope.launch {
+                                snackBarHostState.currentSnackbarData?.dismiss()
+                                snackBarHostState.showSnackbar("Odamlar sonini kiriting!")
+                            }
+                        } catch (e: Exception) {
+
                         }
                         return@AppButton
                     }

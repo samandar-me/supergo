@@ -84,7 +84,7 @@ fun CarItem(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = car.name, fontWeight = FontWeight.Bold)
-                        Text(text = "${car.price}", fontWeight = FontWeight.Bold)
+                        Text(text = "${car.price ?: 0}", fontWeight = FontWeight.Bold)
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth().weight(1.2f).padding(horizontal = 20.dp),

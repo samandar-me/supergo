@@ -19,8 +19,7 @@ fun RootContent(component: RootComponent) {
         colorScheme = lightColorScheme(primary = Color.Black)
     ) {
         Children(
-            stack = component.childStack,
-            animation = stackAnimation(slide())
+            stack = component.childStack
         ) {
             when(val child = it.instance) {
                 is RootComponent.Child.Intro -> IntroScreen(child.component)
