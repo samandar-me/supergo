@@ -29,5 +29,6 @@ class HumanComponent(
     }
     sealed interface Output {
         data object OnBack: Output
+        data object OnSuccess: Output
     }
 }

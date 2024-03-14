@@ -9,11 +9,3 @@ data class CityItem(
     val name: String,
     val region: Region
 )
-val FakeCityItem = CityItem(
-    id = 0,
-    name = "Shaharni tanlang",
-    region = Region(
-        id = 1,
-        name = "Shaharni tanlang"
-    )
-)

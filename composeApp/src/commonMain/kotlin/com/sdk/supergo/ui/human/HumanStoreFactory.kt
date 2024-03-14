@@ -5,21 +5,27 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.sdk.supergo.appDispatchers
 import com.sdk.supergo.core.CityType
 import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
-import com.sdk.supergo.data.model.FakeCityItem
 import com.sdk.supergo.data.model.Order
+import com.sdk.supergo.data.model.Region
 import com.sdk.supergo.data.repository.NetworkRepository
-import com.sdk.supergo.util.logDe
-import com.sdk.supergo.util.logEe
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+
+val FakeCityItem = CityItem(
+    id = 0,
+    name = "Shaharni tanlang",
+    region = Region(
+        id = 1,
+        name = "Shaharni tanlang"
+    )
+)
 
 internal class HumanStoreFactory(
     private val storeFactory: StoreFactory
@@ -68,7 +74,7 @@ internal class HumanStoreFactory(
 
     private inner class ExecutorImpl :
         CoroutineExecutor<HumanStore.Intent, Unit, HumanStore.State, Message, Nothing>(
-            appDispatchers.main
+           // appDispatchers.main
         ) {
         override fun executeAction(action: Unit, getState: () -> HumanStore.State) {
             loadMainScreenData()
@@ -105,7 +111,6 @@ internal class HumanStoreFactory(
         }
 
         private fun order(state: HumanStore.State) {
-            logDe(state.toString())
             dispatch(Message.OnConfirmBtnStateChanged)
             scope.launch {
                 val response = repository.sendOrder(
@@ -154,7 +159,7 @@ internal class HumanStoreFactory(
                 val carList = mutableListOf<Car>()
                 repository.getCityList(CityType.ANDIJON)
                     .catch {
-                        logEe(it.message.toString())
+
                     }
                     .collectLatest { list ->
                         cityList1.clear()
@@ -162,14 +167,14 @@ internal class HumanStoreFactory(
                     }
                 repository.getCityList(CityType.TOSHKENT)
                     .catch {
-                        logEe(it.message.toString())
+
                     }.collectLatest { list ->
                         cityList2.clear()
                         cityList2.addAll(list)
                     }
                 repository.getCarList()
                     .catch {
-                        logEe(it.message.toString())
+
                     }.collectLatest { list ->
                         carList.clear()
                         carList.addAll(list)
@@ -216,14 +221,14 @@ internal class HumanStoreFactory(
                 is Message.OnNoteChanged -> copy(noteToDriver = msg.note)
                 is Message.OnNumberChanged -> copy(number = msg.value)
                 is Message.OnCloseOrder -> copy(isOrderVisible = false)
-                is Message.OnShowOrder -> copy(isOrderVisible = true)
+                is Message.OnShowOrder -> copy(isOrderVisible = true, isSuccess = null)
                 is Message.OnBackToOrder -> copy(
                     isConfirmVisible = false,
                     isOrderVisible = true,
                     optText = ""
                 )
 
-                is Message.OnCloseConfirm -> copy(isConfirmVisible = false, number = "", optText = "", isSuccess = null)
+                is Message.OnCloseConfirm -> copy(isConfirmVisible = false, number = "", optText = "")
                 is Message.OnConfirmBtnStateChanged -> copy(isConfirmBtnLoading = !isConfirmBtnLoading)
                 is Message.OnOtpChanged -> copy(optText = msg.value, isSuccess = null)
                 is Message.OnSuccess -> copy(

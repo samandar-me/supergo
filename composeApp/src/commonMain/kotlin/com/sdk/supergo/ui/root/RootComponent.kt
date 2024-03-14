@@ -73,6 +73,10 @@ class RootComponent internal constructor(
 
     private fun onHumanOutput(output: HumanComponent.Output) = when(output) {
         is HumanComponent.Output.OnBack -> navigation.pop()
+        is HumanComponent.Output.OnSuccess -> {
+            navigation.pop()
+            navigation.push(Configuration.Intro)
+        }
     }
     private fun onProfileOutput(output: ProfileComponent.Output) = when(output) {
         is ProfileComponent.Output.OnBack -> navigation.pop()

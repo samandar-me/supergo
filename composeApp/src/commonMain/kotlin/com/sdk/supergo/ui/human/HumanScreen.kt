@@ -40,7 +40,8 @@ fun HumanScreen(component: HumanComponent) {
 
     LaunchedEffect(state.isSuccess) {
         if(state.isSuccess == true) {
-            snackBarHostState.showSnackbar("Buyurtma berildi")
+            component.onOutput(HumanComponent.Output.OnSuccess)
+           // snackBarHostState.showSnackbar("Buyurtma berildi")
         }
     }
 
