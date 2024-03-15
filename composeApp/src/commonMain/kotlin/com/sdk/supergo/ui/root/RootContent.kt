@@ -9,6 +9,8 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import com.sdk.supergo.ui.deliver.DeliverScreen
+import com.sdk.supergo.ui.deliver.DeliverStore
 import com.sdk.supergo.ui.human.HumanScreen
 import com.sdk.supergo.ui.intro.IntroScreen
 import com.sdk.supergo.ui.profile.ProfileScreen
@@ -24,6 +26,7 @@ fun RootContent(component: RootComponent) {
             when(val child = it.instance) {
                 is RootComponent.Child.Intro -> IntroScreen(child.component)
                 is RootComponent.Child.Human -> HumanScreen(child.component)
+                is RootComponent.Child.Deliver -> DeliverScreen(child.component)
                 is RootComponent.Child.Profile -> ProfileScreen(child.component)
             }
         }

@@ -132,6 +132,7 @@ fun IntroScreen(component: IntroComponent) {
                 Spacer(Modifier.height(20.dp))
                 AppButton(
                     onClick = {
+                        Constants.isOrderSuccess = false
                         component.onOutput(IntroComponent.Output.OnDeliverClicked)
                     },
                     text = "Yetkazib berish",

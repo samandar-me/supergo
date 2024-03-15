@@ -7,6 +7,7 @@ import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
 import com.sdk.supergo.data.model.CodeResponse
 import com.sdk.supergo.data.model.Order
+import com.sdk.supergo.data.model.OrderDeliver
 import com.sdk.supergo.data.model.SendCode
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -73,7 +74,12 @@ internal class NetworkService(
         )
         emit(response.status == HttpStatusCode.Created || response.status == HttpStatusCode.OK)
     }
-    fun Boolean.cap(): String {
+
+    override suspend fun sendDeliverOrder(order: OrderDeliver): Flow<Boolean> = flow {
+
+    }
+
+    private fun Boolean.cap(): String {
         return this.toString().capitalize(Locale.current)
     }
 }

@@ -1,6 +1,5 @@
-package com.sdk.supergo.ui.human
+package com.sdk.supergo.ui.deliver
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -13,39 +12,25 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -55,29 +40,25 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sdk.supergo.ui.component.AppButton
 import com.sdk.supergo.ui.component.CarItem
 import com.sdk.supergo.ui.component.CityDropDown
 import com.sdk.supergo.ui.component.Dot
 import com.sdk.supergo.ui.component.Loading
 import com.sdk.supergo.ui.component.NoteToDriver
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.MessageCircle
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HumanContent(
+fun DeliverContent(
     paddingValues: PaddingValues,
     focusRequester: FocusRequester,
-    state: HumanStore.State,
-    onEvent: (HumanStore.Intent) -> Unit
+    state: DeliverStore.State,
+    onEvent: (DeliverStore.Intent) -> Unit
 ) {
     val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
@@ -139,10 +120,10 @@ fun HumanContent(
                             expanded = state.fromExpanded,
                             selectedCity = state.selectedCity1,
                             onChanged = {
-                                onEvent(HumanStore.Intent.OnFromChanged)
+                                onEvent(DeliverStore.Intent.OnFromChanged)
                             },
                             onSelected = { s ->
-                                onEvent(HumanStore.Intent.OnFromSelected(s))
+                                onEvent(DeliverStore.Intent.OnFromSelected(s))
                             },
                             cityList = state.cityList1
                         )
@@ -152,10 +133,10 @@ fun HumanContent(
                             expanded = state.toExpanded,
                             selectedCity = state.selectedCity2,
                             onChanged = {
-                                onEvent(HumanStore.Intent.OnToChanged)
+                                onEvent(DeliverStore.Intent.OnToChanged)
                             },
                             onSelected = { s ->
-                                onEvent(HumanStore.Intent.OnToSelected(s))
+                                onEvent(DeliverStore.Intent.OnToSelected(s))
                             },
                             cityList = state.cityList2
                         )
@@ -168,7 +149,7 @@ fun HumanContent(
                         Box(
                             modifier = Modifier.size(45.dp).clip(CircleShape)
                                 .background(Color(0xFFEDEDED)).clickable {
-                                    onEvent(HumanStore.Intent.OnReplaced)
+                                    onEvent(DeliverStore.Intent.OnReplaced)
                                 },
                             contentAlignment = Alignment.Center
                         ) {
@@ -182,166 +163,13 @@ fun HumanContent(
                 }
             }
             item {
-                PeopleCountSection(
-                    focusRequester = focusRequester,
-                    value = state.peopleCount,
-                    onChanged = {
-                        onEvent(HumanStore.Intent.OnPeopleCountChanged(it))
-                    }
-                )
-            }
-            item {
-                Spacer(Modifier.height(20.dp))
-                Text(
-                    text = "Mashina tanlang",
-                    fontSize = 18.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.height(12.dp))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    itemsIndexed(
-                        items = state.carList,
-                        itemContent = { index, item ->
-                            CarItem(
-                                car = item,
-                                selected = state.selectedCarIndex == index,
-                                onSelected = {
-                                    onEvent(HumanStore.Intent.OnCarSelected(index))
-                                }
-                            )
-                        }
-                    )
-                }
-            }
-            item {
-                AdditionSection(
-                    luggage = state.luggage,
-                    conditioner = state.con,
-                    largeLug = state.largeL,
-                    onConditionerChanged = {
-                        onEvent(HumanStore.Intent.OnCon)
-                    },
-                    onLuggageChanged = {
-                        onEvent(HumanStore.Intent.OnLuggage)
-                    },
-                    onLargeLugChanged = {
-                        onEvent(HumanStore.Intent.OnLarge)
-                    },
-                )
-            }
-            item {
                 NoteToDriver(
                     value = state.noteToDriver,
                     onChanged = {
-                        onEvent(HumanStore.Intent.OnNoteChanged(it))
+                        onEvent(DeliverStore.Intent.OnNoteChanged(it))
                     }
                 )
             }
         }
     }
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun AdditionSection(
-    luggage: Boolean,
-    conditioner: Boolean,
-    largeLug: Boolean,
-    onLuggageChanged: () -> Unit,
-    onConditionerChanged: () -> Unit,
-    onLargeLugChanged: () -> Unit,
-) {
-    Spacer(Modifier.height(20.dp))
-    Text(
-        text = "Qo’shimcha",
-        fontSize = 18.sp,
-        color = Color.Black,
-        fontWeight = FontWeight.Bold
-    )
-    Spacer(Modifier.height(12.dp))
-    FlowRow {
-        CheckText(
-            title = "Yukxona",
-            checked = luggage,
-            onChecked = onLuggageChanged
-        )
-        CheckText(
-            title = "Katta xajmdagi yuk",
-            checked = largeLug,
-            onChecked = onLargeLugChanged
-        )
-        CheckText(
-            title = "Kanditsaner",
-            checked = conditioner,
-            onChecked = onConditionerChanged
-        )
-    }
-}
-
-@Composable
-private fun CheckText(
-    title: String,
-    checked: Boolean,
-    onChecked: () -> Unit
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(
-            checked = checked,
-            onCheckedChange = {
-                onChecked()
-            },
-            colors = CheckboxDefaults.colors(
-                checkmarkColor = Color.White,
-                checkedColor = Color(0xFF007BFF)
-            )
-        )
-        Text(
-            text = title
-        )
-    }
-}
-
-@Composable
-private fun PeopleCountSection(
-    focusRequester: FocusRequester,
-    value: String,
-    onChanged: (String) -> Unit
-) {
-    TextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .focusRequester(focusRequester)
-            .padding(horizontal = 16.dp),
-        value = value,
-        onValueChange = {
-            if (it.length <= 2) onChanged(it)
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Done
-        ),
-        leadingIcon = {
-            Icon(
-                painter = painterResource("img/group.png"),
-                contentDescription = "group",
-                modifier = Modifier.size(20.dp),
-                tint = Color.Black
-            )
-        },
-        placeholder = {
-            Text(text = "Nechta odam")
-        },
-        singleLine = true,
-        colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            focusedContainerColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Gray
-        )
-    )
 }

@@ -13,3 +13,11 @@ data class Order(
     val carId: String,
     val comment: String
 )
+data class OrderDeliver(
+    val phone: String,
+    val code: String,
+    val where: String,
+    val whereTo: String,
+    val isDelivery: Boolean,
+    val comment: String
+)
