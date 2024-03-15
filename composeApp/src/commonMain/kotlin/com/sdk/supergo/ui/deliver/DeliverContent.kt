@@ -56,7 +56,6 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun DeliverContent(
     paddingValues: PaddingValues,
-    focusRequester: FocusRequester,
     state: DeliverStore.State,
     onEvent: (DeliverStore.Intent) -> Unit
 ) {

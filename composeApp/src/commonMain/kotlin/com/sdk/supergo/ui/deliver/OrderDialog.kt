@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -72,28 +73,18 @@ fun OrderDialog(
             },
             text = {
                 Column {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-
-                        ThreeText(
-                            title = state.title1,
-                            desc = state.selectedCity1.name,
-                            icon = "pushpin.png"
-                        )
-                        Spacer(
-                            modifier = Modifier
-                                .height(120.dp)
-                                .width(1.dp)
-                                .background(Color.DarkGray)
-                        )
-                        ThreeText(
-                            title = state.title2,
-                            desc = state.selectedCity2.name,
-                            icon = "location.png"
-                        )
-                    }
-                    Spacer(Modifier.height(30.dp))
+                    ThreeText(
+                        title = state.title1,
+                        desc = state.selectedCity1.name,
+                        icon = "pushpin.png"
+                    )
+                    Divider(modifier = Modifier.fillMaxWidth().padding(12.dp))
+                    ThreeText(
+                        title = state.title2,
+                        desc = state.selectedCity2.name,
+                        icon = "location.png"
+                    )
+                    Spacer(Modifier.height(10.dp))
                     TextField(
                         modifier = Modifier
                             .fillMaxWidth()

@@ -61,7 +61,7 @@ internal class NetworkService(
             append("where", order.where)
             append("where_to", order.whereTo)
             append("person", order.person.toString())
-            append("is_delivery", order.isDelivery.cap())
+            append("is_delivery", "False")
             append("baggage", order.baggage.cap())
             append("big_baggage", order.bigBaggage.cap())
             append("conditioner", order.conditioner.cap())
@@ -76,7 +76,21 @@ internal class NetworkService(
     }
 
     override suspend fun sendDeliverOrder(order: OrderDeliver): Flow<Boolean> = flow {
-
+        val params = Parameters.build {
+            append("phone", order.phone)
+            append("code", order.code)
+            append("tg_id", "1")
+            append("where", order.where)
+            append("where_to", order.whereTo)
+            append("car_id", "1")
+            append("is_delivery", "True")
+            append("comment", order.comment)
+        }
+        val response = httpClient.submitForm(
+            url = BASE_URL + "order/",
+            formParameters = params
+        )
+        emit(response.status == HttpStatusCode.Created || response.status == HttpStatusCode.OK)
     }
 
     private fun Boolean.cap(): String {

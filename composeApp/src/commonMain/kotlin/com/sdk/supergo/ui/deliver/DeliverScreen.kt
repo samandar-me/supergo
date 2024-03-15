@@ -28,11 +28,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeliverScreen(component: DeliverComponent) {
-    val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val state by component.state.collectAsState()
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(state.isSuccess) {
         if(state.isSuccess == true) {
@@ -68,26 +65,6 @@ fun DeliverScreen(component: DeliverComponent) {
                 modifier = Modifier.padding(16.dp),
                 text = "Buyurtma berish",
                 onClick = {
-//                    if (state.peopleCount.isBlank()) {
-//                        try {
-//                            focusRequester.requestFocus()
-//                            scope.launch {
-//                                snackBarHostState.currentSnackbarData?.dismiss()
-//                                snackBarHostState.showSnackbar("Odamlar sonini kiriting!")
-//                            }
-//                        } catch (e: Exception) {
-//
-//                        }
-//                        return@AppButton
-//                    }
-//                    if (state.selectedCarIndex == -1) {
-//                        scope.launch {
-//                            snackBarHostState.currentSnackbarData?.dismiss()
-//                            snackBarHostState.showSnackbar("Mashina tanlang!")
-//                        }
-//                        return@AppButton
-//                    }
-//                    focusManager.clearFocus()
                     component.onEvent(DeliverStore.Intent.OnShowOrder)
                 }
             )
@@ -96,7 +73,6 @@ fun DeliverScreen(component: DeliverComponent) {
         DeliverContent(
             paddingValues = it,
             state = state,
-            focusRequester = focusRequester,
             onEvent = component::onEvent
         )
         OrderDialog(

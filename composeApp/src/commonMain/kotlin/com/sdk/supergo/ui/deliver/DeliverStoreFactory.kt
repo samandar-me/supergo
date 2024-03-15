@@ -12,6 +12,7 @@ import com.sdk.supergo.data.model.Order
 import com.sdk.supergo.data.model.OrderDeliver
 import com.sdk.supergo.data.model.Region
 import com.sdk.supergo.data.repository.NetworkRepository
+import com.sdk.supergo.ui.human.FakeCityItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -96,7 +97,6 @@ internal class HumanStoreFactory(
                         code = state.optText,
                         where = state.selectedCity1.id.toString(),
                         whereTo = state.selectedCity2.id.toString(),
-                        isDelivery = true,
                         comment = state.noteToDriver
                     )
                 )
@@ -201,7 +201,9 @@ internal class HumanStoreFactory(
                 is Message.OnSuccess -> copy(
                     isLoading = false,
                     cityList1 = msg.cityList1,
-                    cityList2 = msg.cityList2
+                    cityList2 = msg.cityList2,
+                    selectedCity1 = msg.cityList1.firstOrNull() ?: FakeCityItem,
+                    selectedCity2 = msg.cityList2.firstOrNull() ?: FakeCityItem
                 )
             }
         }

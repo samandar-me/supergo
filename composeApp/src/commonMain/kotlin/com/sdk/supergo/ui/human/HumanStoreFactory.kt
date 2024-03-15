@@ -120,7 +120,6 @@ internal class HumanStoreFactory(
                         where = state.selectedCity1.id.toString(),
                         whereTo = state.selectedCity2.id.toString(),
                         person = state.peopleCount.toInt(),
-                        isDelivery = false,
                         baggage = state.luggage,
                         bigBaggage = state.largeL,
                         conditioner = state.con,
