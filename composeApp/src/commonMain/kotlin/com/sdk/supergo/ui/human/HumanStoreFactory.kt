@@ -124,7 +124,8 @@ internal class HumanStoreFactory(
                         bigBaggage = state.largeL,
                         conditioner = state.con,
                         carId = state.carList[state.selectedCarIndex].id.toString(),
-                        comment = state.noteToDriver
+                        comment = state.noteToDriver,
+                        isDeliver = false
                     )
                 )
                 delay(1000L)

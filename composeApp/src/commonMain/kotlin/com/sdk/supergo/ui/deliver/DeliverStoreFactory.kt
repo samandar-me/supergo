@@ -9,8 +9,6 @@ import com.sdk.supergo.core.CityType
 import com.sdk.supergo.data.model.Car
 import com.sdk.supergo.data.model.CityItem
 import com.sdk.supergo.data.model.Order
-import com.sdk.supergo.data.model.OrderDeliver
-import com.sdk.supergo.data.model.Region
 import com.sdk.supergo.data.repository.NetworkRepository
 import com.sdk.supergo.ui.human.FakeCityItem
 import kotlinx.coroutines.delay
@@ -91,13 +89,19 @@ internal class HumanStoreFactory(
         private fun order(state: DeliverStore.State) {
             dispatch(Message.OnConfirmBtnStateChanged)
             scope.launch {
-                val response = repository.sendDeliverOrder(
-                    OrderDeliver(
+                val response = repository.sendOrder(
+                    Order(
                         phone = state.number,
                         code = state.optText,
                         where = state.selectedCity1.id.toString(),
                         whereTo = state.selectedCity2.id.toString(),
-                        comment = state.noteToDriver
+                        comment = state.noteToDriver,
+                        person = 0,
+                        baggage = false,
+                        bigBaggage = false,
+                        conditioner = false,
+                        carId = "1",
+                        isDeliver = true
                     )
                 )
                 delay(1000L)

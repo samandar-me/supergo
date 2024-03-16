@@ -10,12 +10,6 @@ data class Order(
     val bigBaggage: Boolean,
     val conditioner: Boolean,
     val carId: String,
-    val comment: String
-)
-data class OrderDeliver(
-    val phone: String,
-    val code: String,
-    val where: String,
-    val whereTo: String,
-    val comment: String
+    val comment: String,
+    val isDeliver: Boolean
 )

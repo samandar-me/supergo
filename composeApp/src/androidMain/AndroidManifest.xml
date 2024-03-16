@@ -5,12 +5,13 @@
 
     <application
         android:name=".AndroidApp"
-        android:icon="@android:drawable/ic_menu_compass"
+        android:icon="@mipmap/ic_launcher"
         android:label="SuperGo"
         android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".AppActivity"
+            android:theme="@style/AppTheme.Splash"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize"

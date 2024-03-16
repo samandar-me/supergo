@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_back</item>
+        <item name="colorPrimary">#F7CC11</item>
+        <item name="colorPrimaryDark">#F7CC11</item>
+        <item name="colorAccent">#F7CC11</item>
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

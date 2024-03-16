@@ -18,7 +18,7 @@ import com.sdk.supergo.ui.profile.ProfileScreen
 @Composable
 fun RootContent(component: RootComponent) {
     MaterialTheme(
-        colorScheme = lightColorScheme(primary = Color.Black)
+        colorScheme = lightColorScheme(background = Color.White, primary = Color.Black, surface = Color.White)
     ) {
         Children(
             stack = component.childStack
