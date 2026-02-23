@@ -1,20 +1,13 @@
-# Compose Multiplatform Application
+## Supergo 🚕
 
-## Before running!
- - check your system with [KDoctor](https://github.com/Kotlin/kdoctor)
- - install JDK 17 on your machine
- - add `local.properties` file to the project root and set a path to Android SDK there
+<img width="100%" alt="image" src="https://github.com/samandar-me/my-portfolio/assets/95674842/887b3e8a-52b3-432a-bdb0-59c3e891c325">
 
-### Android
-To run the application on android device/emulator:  
- - open project in Android Studio and run imported android run configuration
+* Car finding app for going somewhere and delivering.
 
-To build the application bundle:
- - run `./gradlew :composeApp:assembleDebug`
- - find `.apk` file in `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
-
-### iOS
-To run the application on iPhone device/simulator:
- - Open `iosApp/iosApp.xcproject` in Xcode and run standard configuration
- - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
-
+### Tools
+• Kotlin Multiplatform
+• Compoose Multiplatform
+• Kotlin
+• Ktor
+• MVI
+• Decompose
